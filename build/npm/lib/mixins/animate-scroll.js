@@ -1,3 +1,5 @@
+/*eslint-disable */
+
 var smooth = require('./smooth');
 
 var easing = smooth.defaultEasing;
@@ -50,7 +52,9 @@ var __percent;
 
 var currentPositionY = function() {
   var supportPageOffset = window.pageXOffset !== undefined;
+  console.log(supportPageOffset, 'spo');
   var isCSS1Compat = ((document.compatMode || "") === "CSS1Compat");
+  console.log(window.pageYOffset, 'pyo');
   return supportPageOffset ? window.pageYOffset : isCSS1Compat ?
          document.documentElement.scrollTop : document.body.scrollTop;
 };
@@ -66,16 +70,17 @@ var animateTopScroll = function(timestamp) {
   __progress = timestamp - __start;
 
   __percent = (__progress >= __duration ? 1 : easing(__progress/__duration));
-  
-  //added this part 
-  if (__parent){   
-    __deltaTop = __relativePosition;
 
-    __currentPositionY = Math.ceil(__deltaTop * __percent);
+  //added this part
+  if (__parent){
+    __deltaTop = __relativePosition - __startPositionY;
+    console.log(__relativePosition, __startPositionY, 'deltaTop');
 
+    __currentPositionY = 
+      Math.ceil((__deltaTop * __percent) +  __startPositionY);
     __parent.scrollTop = __currentPositionY;
 
-    
+
   }else {
     __deltaTop = Math.round(__targetPositionY - __startPositionY);
 
@@ -86,18 +91,26 @@ var animateTopScroll = function(timestamp) {
   }
 
   if (__percent < 1){
-    requestAnimationFrame(animateTopScroll);   
+    requestAnimationFrame(animateTopScroll);
   }
 
 
 };
 
-var startAnimateTopScroll = function(y, options, parent, relativePosition) {
+var startAnimateTopScroll = function(y, options, parent, relativePosition, currentPosition) {
+  console.log(relativePosition, 'starting animate scroll');
   __start           = null;
   __cancel          = false;
-  __startPositionY  = currentPositionY();
+  __startPositionY  = 
+    currentPosition !== undefined ? currentPosition : currentPositionY();
+
+  __currentPositionY  = __startPositionY;
+
+  console.log(__currentPositionY, 'start cpy');
   __targetPositionY = y + __startPositionY;
   __duration        = options.duration || 1000;
+
+  console.log(__startPositionY, 'start Y');
 
   if (parent){
     __parent = parent;

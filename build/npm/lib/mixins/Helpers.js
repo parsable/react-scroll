@@ -1,3 +1,4 @@
+/*eslint-disable */
 "use strict";
 
 var React = require('react');
@@ -46,66 +47,82 @@ var Helpers = {
       this.scrollTo(this.props.to);
 
     },
+
     componentDidMount: function() {
+      scrollSpy.mount();
+
       if(this.props.spy) {
         var to = this.props.to;
         var element = null;
         var top = 0;
         var height = 0;
-        var self = this;
 
-        scrollSpy.addStateHandler(function() {
+        scrollSpy.addStateHandler((function() {
           if(scroller.getActiveLink() != to) {
-              self.setState({ active : false });
+              this.setState({ active : false });
           }
-        });
+        }).bind(this));
 
-        scrollSpy.addSpyHandler(function(y) {
+        scrollSpy.addSpyHandler((function(y) {
 
           if(!element) {
               element = scroller.get(to);
+
               var cords = element.getBoundingClientRect();
               top = (cords.top + y);
               height = top + cords.height;
           }
 
-          var offsetY = y - self.props.offset;
+          var offsetY = y - this.props.offset;
 
           if(offsetY >= top && offsetY <= height && scroller.getActiveLink() != to) {
-
             scroller.setActiveLink(to);
-
-            self.setState({ active : true });
-
+            this.setState({ active : true });
             scrollSpy.updateStates();
           }
-        });
+        }).bind(this));
       }
+    },
+    componentWillUnmount: function() {
+      scrollSpy.unmount();
     }
   },
 
-  componentWillUnmount: function(){
-    scrollSpy.unmount();
-  },
 
   Element: {
     propTypes: {
       name: React.PropTypes.string.isRequired
     },
+
     componentDidMount: function() {
-      //check if the parentId was added as a prop to element (optional)
-      if (this.props.parentId){
-        //use react getDomNode and offsetTop to get relative position from top of parent div
-        var relativePosition = this.getDOMNode().offsetTop;
-        var parent = document.getElementById(this.props.parentId);
-      } 
+      var dom = React.findDOMNode(this);
+      // start relative position as initial dom offsetTop
+      var relativePosition = dom.offsetTop;
+      var parent = parentMatcher(dom, function(parent){
+        var bool = (window.getComputedStyle(parent).overflowY === 'scroll' || window.getComputedStyle(parent).overflowY === 'auto');
+        return bool;
+      });
       //pass in new paramaters: parent and relativePosition
-      scroller.register(this.props.name, this.getDOMNode(), parent, relativePosition);
+      scroller.register(this.props.name, dom, parent, relativePosition);
     },
     componentWillUnmount: function() {
       scroller.unregister(this.props.name);
     }
   }
+};
+
+function parentMatcher(elem, matcher){
+  // Recursive call method
+  // var parent = elem.parentElement;
+  // if (!parent || matcher(parent)){
+  //   return parent;
+  // }
+  // return parentMatcher(parent, matcher);
+  var parent = elem.parentElement;
+  while(parent && !matcher(parent)){
+    parent = parent.parentElement;
+  }
+  return parent;
 };
 
 module.exports = Helpers;
