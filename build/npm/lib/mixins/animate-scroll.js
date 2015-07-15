@@ -1,3 +1,5 @@
+/*eslint-disable */
+
 var smooth = require('./smooth');
 
 var easing = smooth.defaultEasing;
@@ -39,48 +41,81 @@ var __progress          = 0;
 var __duration          = 0;
 var __cancel            = false;
 
+//added for div element /container
+var __parent            = false;
+var __relativePosition  = false;
+
+
 var __start;
 var __deltaTop;
 var __percent;
 
 var currentPositionY = function() {
   var supportPageOffset = window.pageXOffset !== undefined;
+  console.log(supportPageOffset, 'spo');
   var isCSS1Compat = ((document.compatMode || "") === "CSS1Compat");
+  console.log(window.pageYOffset, 'pyo');
   return supportPageOffset ? window.pageYOffset : isCSS1Compat ?
          document.documentElement.scrollTop : document.body.scrollTop;
 };
 
 var animateTopScroll = function(timestamp) {
   // Cancel on specific events
-  if(__cancel) { return };
-
-
-  __deltaTop = Math.round(__targetPositionY - __startPositionY);
+  if(__cancel) { return; }
 
   if (__start === null) {
-    __start = timestamp;
+      __start = timestamp;
   }
 
   __progress = timestamp - __start;
 
   __percent = (__progress >= __duration ? 1 : easing(__progress/__duration));
 
-  __currentPositionY = __startPositionY + Math.ceil(__deltaTop * __percent);
+  //added this part
+  if (__parent){
+    __deltaTop = __relativePosition - __startPositionY;
+    console.log(__relativePosition, __startPositionY, 'deltaTop');
 
-  window.scrollTo(0, __currentPositionY);
+    __currentPositionY = 
+      Math.ceil((__deltaTop * __percent) +  __startPositionY);
+    __parent.scrollTop = __currentPositionY;
 
-  if(__percent < 1) {
+
+  }else {
+    __deltaTop = Math.round(__targetPositionY - __startPositionY);
+
+    __currentPositionY = __startPositionY + Math.ceil(__deltaTop * __percent);
+
+    window.scrollTo(0, __currentPositionY);
+
+  }
+
+  if (__percent < 1){
     requestAnimationFrame(animateTopScroll);
   }
 
+
 };
 
-var startAnimateTopScroll = function(y, options) {
+var startAnimateTopScroll = function(y, options, parent, relativePosition, currentPosition) {
+  console.log(relativePosition, 'starting animate scroll');
   __start           = null;
   __cancel          = false;
-  __startPositionY  = currentPositionY();
+  __startPositionY  = 
+    currentPosition !== undefined ? currentPosition : currentPositionY();
+
+  __currentPositionY  = __startPositionY;
+
+  console.log(__currentPositionY, 'start cpy');
   __targetPositionY = y + __startPositionY;
   __duration        = options.duration || 1000;
+
+  console.log(__startPositionY, 'start Y');
+
+  if (parent){
+    __parent = parent;
+    __relativePosition = relativePosition;
+  }
 
   requestAnimationFrame(animateTopScroll);
 };

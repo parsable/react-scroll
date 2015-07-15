@@ -1,3 +1,4 @@
+/*eslint-disable */
 var animateScroll = require('./animate-scroll');
 
 var __mapped = {};
@@ -9,8 +10,14 @@ module.exports = {
     __mapped = [];
   },
 
-  register: function(name, element){
-    __mapped[name] = element;
+  register: function(name, element, parent, relativePosition){
+    console.log(relativePosition, 'registering');
+    __mapped[name] = {
+      element: element,
+      parent: parent,
+      position: relativePosition
+    };
+
   },
 
   unregister: function(name) {
@@ -18,7 +25,7 @@ module.exports = {
   },
 
   get: function(name) {
-    return __mapped[name];
+    return __mapped[name].element;
   },
 
   setActiveLink: function(link) {
@@ -35,19 +42,44 @@ module.exports = {
      * get the mapped DOM element
      */
 
-      var target = __mapped[to];
+
+      //check to make sure that the scrollable parent div exists
+      if (__mapped[to].parent){
+        var relativePosition = __mapped[to].position;
+        var parent = __mapped[to].parent;
+        //set the target equal to the Dom of the parent div
+        var target = parent;
+      }
+      else {
+        var target = __mapped[to].element;
+      }
 
       if(!target) {
         throw new Error("target Element not found");
       }
 
-      var coordinates = target.getBoundingClientRect();
+      var rect = target.getBoundingClientRect();
+      var coordinates = {
+        left: rect.left,
+        top: rect.top,
+        width: rect.width,
+        height: rect.height
+      };
+
+      console.log(coordinates, 'target');
 
       /*
        * if animate is not provided just scroll into the view
        */
 
       if(!animate) {
+        console.log('not animating');
+        //if parent div exists just set the scrolTop of the div to the relativePosition of the element (no animation or duration)
+        if (parent){
+          parent.scrollTop = relativePosition;
+          return;
+        }
+        //if parent div doesn't exist run normally
         var bodyRect = document.body.getBoundingClientRect();
         var scrollOffset = coordinates.top - bodyRect.top;
         window.scrollTo(0, scrollOffset + (offset || 0));
@@ -62,7 +94,10 @@ module.exports = {
         duration : duration
       };
 
-      animateScroll.animateTopScroll(coordinates.top + (offset || 0), options);
+      var currentScrollPosition = parent.scrollTop;
+      console.log(currentScrollPosition, 'curr poss');
+      //added parentQ parameter and relativePosition
+      animateScroll.animateTopScroll(coordinates.top + (offset || 0), options, parent, relativePosition, currentScrollPosition);
 
   }
 };

@@ -1,3 +1,4 @@
+/*eslint-disable */
 "use strict";
 
 var React = require('react');
@@ -92,13 +93,36 @@ var Helpers = {
     propTypes: {
       name: React.PropTypes.string.isRequired
     },
+
     componentDidMount: function() {
-      scroller.register(this.props.name, this.getDOMNode());
+      var dom = React.findDOMNode(this);
+      // start relative position as initial dom offsetTop
+      var relativePosition = dom.offsetTop;
+      var parent = parentMatcher(dom, function(parent){
+        var bool = (window.getComputedStyle(parent).overflowY === 'scroll' || window.getComputedStyle(parent).overflowY === 'auto');
+        return bool;
+      });
+      //pass in new paramaters: parent and relativePosition
+      scroller.register(this.props.name, dom, parent, relativePosition);
     },
     componentWillUnmount: function() {
       scroller.unregister(this.props.name);
     }
   }
+};
+
+function parentMatcher(elem, matcher){
+  // Recursive call method
+  // var parent = elem.parentElement;
+  // if (!parent || matcher(parent)){
+  //   return parent;
+  // }
+  // return parentMatcher(parent, matcher);
+  var parent = elem.parentElement;
+  while(parent && !matcher(parent)){
+    parent = parent.parentElement;
+  }
+  return parent;
 };
 
 module.exports = Helpers;
