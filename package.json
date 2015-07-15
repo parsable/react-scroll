@@ -1,6 +1,6 @@
 {
-  "name": "react-scroll",
-  "version": "0.0.1",
+  "name": "wi-react-scroll",
+  "version": "0.1.0",
   "description": "A scroll component for React.js",
   "main": "modules",
   "repository": {
@@ -11,30 +11,21 @@
     "examples": "webpack-dev-server --config examples/webpack.config.js --no-info --content-base examples",
     "prepublish": "gulp"
   },
-  "homepage": "https://github.com/fisshy/react-scroll",
-  "bugs": "https://github.com/fisshy/react-scroll/issues",
-  "authors": [
-    "Joachim Karlsson"
-  ],
   "license": "MIT",
   "tags": [
     "react",
     "scroll"
-  ],
-  "keywords": [
-    "react",
-    "react-component",
-    "scroll",
-    "scroller",
-    "scrolls"
   ],
   "devDependencies": {
     "babel-core": "^4.6.0",
     "babel-loader": "^4.0.0",
     "gulp": "^3.8.11",
     "gulp-concat": "^2.5.2",
-    "react": ">=0.12.0",
     "webpack": "^1.6.0",
     "webpack-dev-server": "^1.7.0"
+  },
+  "main": "./build/npm/lib/index.js",
+  "peerDependencies": {
+    "react": ">=0.12.0"
   }
 }
