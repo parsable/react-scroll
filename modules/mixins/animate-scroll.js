@@ -1,3 +1,5 @@
+/*eslint-disable */
+
 var smooth = require('./smooth');
 
 var easing = smooth.defaultEasing;
@@ -64,40 +66,37 @@ var animateTopScroll = function(timestamp) {
   }
 
   __progress = timestamp - __start;
-
   __percent = (__progress >= __duration ? 1 : easing(__progress/__duration));
-  
-  //added this part 
-  if (__parent){   
-    __deltaTop = __relativePosition;
-
-    __currentPositionY = Math.ceil(__deltaTop * __percent);
-
+  if (__parent){
+    __deltaTop = __relativePosition - __startPositionY;
+    __currentPositionY =
+      Math.ceil((__deltaTop * __percent) +  __startPositionY);
     __parent.scrollTop = __currentPositionY;
 
-    
+
   }else {
     __deltaTop = Math.round(__targetPositionY - __startPositionY);
-
     __currentPositionY = __startPositionY + Math.ceil(__deltaTop * __percent);
-
     window.scrollTo(0, __currentPositionY);
 
   }
 
   if (__percent < 1){
-    requestAnimationFrame(animateTopScroll);   
+    requestAnimationFrame(animateTopScroll);
   }
 
 
 };
 
-var startAnimateTopScroll = function(y, options, parent, relativePosition) {
+var startAnimateTopScroll = function(y, options, parent, relativePosition, currentPosition) {
   __start           = null;
   __cancel          = false;
-  __startPositionY  = currentPositionY();
+  __startPositionY  = 
+    currentPosition !== undefined ? currentPosition : currentPositionY();
+  __currentPositionY  = __startPositionY;
   __targetPositionY = y + __startPositionY;
   __duration        = options.duration || 1000;
+
 
   if (parent){
     __parent = parent;

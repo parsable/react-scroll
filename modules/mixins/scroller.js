@@ -1,3 +1,4 @@
+/*eslint-disable */
 var animateScroll = require('./animate-scroll');
 
 var __mapped = {};
@@ -56,7 +57,13 @@ module.exports = {
         throw new Error("target Element not found");
       }
 
-      var coordinates = target.getBoundingClientRect();
+      var rect = target.getBoundingClientRect();
+      var coordinates = {
+        left: rect.left,
+        top: rect.top,
+        width: rect.width,
+        height: rect.height
+      };
 
       /*
        * if animate is not provided just scroll into the view
@@ -73,7 +80,6 @@ module.exports = {
         var scrollOffset = coordinates.top - bodyRect.top;
         window.scrollTo(0, scrollOffset + (offset || 0));
         return;
-        
       }
 
       /*
@@ -83,8 +89,10 @@ module.exports = {
       var options = {
         duration : duration
       };
+
+      var currentScrollPosition = parent.scrollTop;
       //added parentQ parameter and relativePosition
-      animateScroll.animateTopScroll(cordinates.top + (offset || 0), options, parent, relativePosition);
+      animateScroll.animateTopScroll(coordinates.top + (offset || 0), options, parent, relativePosition, currentScrollPosition);
 
   }
 };
