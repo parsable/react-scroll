@@ -36,7 +36,6 @@ module.exports = {
   },
 
   scrollTo: function(to, animate, duration, offset) {
-    console.log(offset);
 
      /*
      * get the mapped DOM element
@@ -93,7 +92,7 @@ module.exports = {
 
       var currentScrollPosition = parent.scrollTop;
       //added parentQ parameter and relativePosition
-      animateScroll.animateTopScroll((offset || 0), options, parent, relativePosition, currentScrollPosition, coordinates.height)
+      animateScroll.animateTopScroll((offset || 0), options, parent, relativePosition, currentScrollPosition)
 
   }
 };
