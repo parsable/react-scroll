@@ -12,20 +12,8 @@
     "prepublish": "gulp"
   },
   "license": "MIT",
-  "tags": [
-    "react",
-    "scroll"
-  ],
-  "devDependencies": {
-    "babel-core": "^4.6.0",
-    "babel-loader": "^4.0.0",
-    "gulp": "^3.8.11",
-    "gulp-concat": "^2.5.2",
-    "webpack": "^1.6.0",
-    "webpack-dev-server": "^1.7.0"
-  },
   "main": "./build/npm/lib/index.js",
   "peerDependencies": {
-    "react": ">=0.12.0"
+    "react": ">=0.13.3"
   }
 }

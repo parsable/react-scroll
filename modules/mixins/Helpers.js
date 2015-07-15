@@ -1,7 +1,7 @@
 /*eslint-disable */
 "use strict";
 
-var React = require('react');
+var React = require('react/addons');
 var animateScroll = require('./animate-scroll');
 var scrollSpy = require('./scroll-spy');
 var scroller = require('./scroller');

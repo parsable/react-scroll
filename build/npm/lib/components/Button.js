@@ -1,6 +1,6 @@
 "use strict";
 
-var React = require('react');
+var React = require('react/addons');
 var assign = require('react/lib/Object.assign');
 var Helpers = require('../mixins/Helpers');
 

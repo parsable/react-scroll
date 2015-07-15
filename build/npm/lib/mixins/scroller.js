@@ -11,7 +11,6 @@ module.exports = {
   },
 
   register: function(name, element, parent, relativePosition){
-    console.log(relativePosition, 'registering');
     __mapped[name] = {
       element: element,
       parent: parent,
@@ -37,6 +36,7 @@ module.exports = {
   },
 
   scrollTo: function(to, animate, duration, offset) {
+    console.log(offset);
 
      /*
      * get the mapped DOM element
@@ -66,14 +66,11 @@ module.exports = {
         height: rect.height
       };
 
-      console.log(coordinates, 'target');
-
       /*
        * if animate is not provided just scroll into the view
        */
 
       if(!animate) {
-        console.log('not animating');
         //if parent div exists just set the scrolTop of the div to the relativePosition of the element (no animation or duration)
         if (parent){
           parent.scrollTop = relativePosition;
@@ -95,9 +92,8 @@ module.exports = {
       };
 
       var currentScrollPosition = parent.scrollTop;
-      console.log(currentScrollPosition, 'curr poss');
       //added parentQ parameter and relativePosition
-      animateScroll.animateTopScroll(coordinates.top + (offset || 0), options, parent, relativePosition, currentScrollPosition);
+      animateScroll.animateTopScroll((offset || 0), options, parent, relativePosition, currentScrollPosition, coordinates.height)
 
   }
 };
