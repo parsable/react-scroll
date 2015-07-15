@@ -8,7 +8,8 @@
     "url": "https://github.com/fisshy/react-scroll.git"
   },
   "scripts": {
-    "examples": "webpack-dev-server --config examples/webpack.config.js --no-info --content-base examples"
+    "examples": "webpack-dev-server --config examples/webpack.config.js --no-info --content-base examples",
+    "prepublish": "gulp"
   },
   "homepage": "https://github.com/fisshy/react-scroll",
   "bugs": "https://github.com/fisshy/react-scroll/issues",

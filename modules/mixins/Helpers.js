@@ -1,3 +1,4 @@
+/*eslint-disable */
 "use strict";
 
 var React = require('react');
@@ -92,13 +93,13 @@ var Helpers = {
     propTypes: {
       name: React.PropTypes.string.isRequired
     },
+
     componentDidMount: function() {
-      var dom = this.getDOMNode();
+      var dom = React.findDOMNode(this);
       // start relative position as initial dom offsetTop
       var relativePosition = dom.offsetTop;
       var parent = parentMatcher(dom, function(parent){
-        var bool = window.getComputedStyle(parent).overflow === 'scroll';
-        if (!bool) relativePosition += parent.offsetTop;
+        var bool = (window.getComputedStyle(parent).overflowY === 'scroll' || window.getComputedStyle(parent).overflowY === 'auto');
         return bool;
       });
       //pass in new paramaters: parent and relativePosition

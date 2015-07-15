@@ -1,3 +1,4 @@
+/*eslint-disable */
 var animateScroll = require('./animate-scroll');
 
 var __mapped = {};
@@ -10,6 +11,7 @@ module.exports = {
   },
 
   register: function(name, element, parent, relativePosition){
+    console.log(relativePosition, 'registering');
     __mapped[name] = {
       element: element,
       parent: parent,
@@ -56,13 +58,22 @@ module.exports = {
         throw new Error("target Element not found");
       }
 
-      var coordinates = target.getBoundingClientRect();
+      var rect = target.getBoundingClientRect();
+      var coordinates = {
+        left: rect.left,
+        top: rect.top,
+        width: rect.width,
+        height: rect.height
+      };
+
+      console.log(coordinates, 'target');
 
       /*
        * if animate is not provided just scroll into the view
        */
 
       if(!animate) {
+        console.log('not animating');
         //if parent div exists just set the scrolTop of the div to the relativePosition of the element (no animation or duration)
         if (parent){
           parent.scrollTop = relativePosition;
@@ -73,7 +84,6 @@ module.exports = {
         var scrollOffset = coordinates.top - bodyRect.top;
         window.scrollTo(0, scrollOffset + (offset || 0));
         return;
-        
       }
 
       /*
@@ -83,8 +93,11 @@ module.exports = {
       var options = {
         duration : duration
       };
+
+      var currentScrollPosition = parent.scrollTop;
+      console.log(currentScrollPosition, 'curr poss');
       //added parentQ parameter and relativePosition
-      animateScroll.animateTopScroll(cordinates.top + (offset || 0), options, parent, relativePosition);
+      animateScroll.animateTopScroll(coordinates.top + (offset || 0), options, parent, relativePosition, currentScrollPosition);
 
   }
 };
