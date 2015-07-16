@@ -1,21 +1,17 @@
 {
   "name": "@wearableintelligence/react-scroll",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "A scroll component for React.js",
-  "main": "./build/npm/lib/index.js",
+  "main": "./modules/index.js",
   "repository": {
     "type": "git",
     "url": "https://github.com/wearableintelligence/react-scroll.git"
   },
   "scripts": {
-    "examples": "webpack-dev-server --config examples/webpack.config.js --no-info --content-base examples",
-    "prepublish": "gulp"
+    "examples": "webpack-dev-server --config examples/webpack.config.js --no-info --content-base examples"
   },
   "license": "MIT",
   "peerDependencies": {
     "react": ">=0.13.3"
-  },
-  "devDependencies": {
-    "gulp": "^3.9.0"
   }
 }
