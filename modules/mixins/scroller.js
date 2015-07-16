@@ -92,8 +92,7 @@ module.exports = {
 
       var currentScrollPosition = parent.scrollTop;
       //added parentQ parameter and relativePosition
-      animateScroll.animateTopScroll(coordinates.top + (offset || 0), options, parent, relativePosition, currentScrollPosition);
+      animateScroll.animateTopScroll((offset || 0), options, parent, relativePosition, currentScrollPosition)
 
   }
 };
-

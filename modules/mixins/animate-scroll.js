@@ -49,6 +49,7 @@ var __relativePosition  = false;
 var __start;
 var __deltaTop;
 var __percent;
+var __targetOffset;
 
 var currentPositionY = function() {
   var supportPageOffset = window.pageXOffset !== undefined;
@@ -67,19 +68,10 @@ var animateTopScroll = function(timestamp) {
 
   __progress = timestamp - __start;
   __percent = (__progress >= __duration ? 1 : easing(__progress/__duration));
-  if (__parent){
-    __deltaTop = __relativePosition - __startPositionY;
-    __currentPositionY =
-      Math.ceil((__deltaTop * __percent) +  __startPositionY);
-    __parent.scrollTop = __currentPositionY;
-
-
-  }else {
-    __deltaTop = Math.round(__targetPositionY - __startPositionY);
-    __currentPositionY = __startPositionY + Math.ceil(__deltaTop * __percent);
-    window.scrollTo(0, __currentPositionY);
-
-  }
+  __deltaTop = __targetPositionY - __startPositionY - __targetOffset;
+  __currentPositionY =
+    Math.ceil((__deltaTop * __percent) +  __startPositionY);
+  __parent.scrollTop = __currentPositionY;
 
   if (__percent < 1){
     requestAnimationFrame(animateTopScroll);
@@ -88,14 +80,15 @@ var animateTopScroll = function(timestamp) {
 
 };
 
-var startAnimateTopScroll = function(y, options, parent, relativePosition, currentPosition) {
+var startAnimateTopScroll = function(y, options, parent, relativePosition, currentPosition, offSetFromTop) {
+
   __start           = null;
   __cancel          = false;
-  __startPositionY  = 
-    currentPosition !== undefined ? currentPosition : currentPositionY();
+  __startPositionY  = currentPosition;
   __currentPositionY  = __startPositionY;
-  __targetPositionY = y + __startPositionY;
+  __targetPositionY = relativePosition;
   __duration        = options.duration || 1000;
+  __targetOffset    = y;
 
 
   if (parent){
