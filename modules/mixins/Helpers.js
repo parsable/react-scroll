@@ -94,22 +94,32 @@ var Helpers = {
       name: React.PropTypes.string.isRequired
     },
 
-    componentDidMount: function() {
-      var dom = React.findDOMNode(this);
-      // start relative position as initial dom offsetTop
-      var relativePosition = dom.offsetTop;
-      var parent = parentMatcher(dom, function(parent){
-        var bool = (window.getComputedStyle(parent).overflowY === 'scroll' || window.getComputedStyle(parent).overflowY === 'auto');
-        return bool;
-      });
-      //pass in new paramaters: parent and relativePosition
-      scroller.register(this.props.name, dom, parent, relativePosition);
+    componentDidMount:function(){
+      registerElement(this);
     },
+
+    componentDidUpdate: function(){
+      registerElement(this);
+    },
+
     componentWillUnmount: function() {
       scroller.unregister(this.props.name);
     }
   }
 };
+
+function registerElement(self) {
+  var dom = React.findDOMNode(self);
+  // start relative position as initial dom offsetTop
+  var relativePosition = dom.offsetTop;
+  var parent = parentMatcher(dom, function(parent){
+    var bool = (window.getComputedStyle(parent).overflowY === 'scroll' || window.getComputedStyle(parent).overflowY === 'auto');
+    return bool;
+  });
+  //pass in new paramaters: parent and relativePosition
+  scroller.register(self.props.name, dom, parent, relativePosition);
+};
+
 
 function parentMatcher(elem, matcher){
   // Recursive call method
