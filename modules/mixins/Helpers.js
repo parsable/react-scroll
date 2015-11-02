@@ -1,7 +1,8 @@
 /*eslint-disable */
 "use strict";
 
-var React = require('react/addons');
+var React = require('react');
+var ReactDOM = require('react-dom');
 var animateScroll = require('./animate-scroll');
 var scrollSpy = require('./scroll-spy');
 var scroller = require('./scroller');
@@ -109,7 +110,7 @@ var Helpers = {
 };
 
 function registerElement(self) {
-  var dom = React.findDOMNode(self);
+  var dom = ReactDOM.findDOMNode(self);
   // start relative position as initial dom offsetTop
   var relativePosition = dom.offsetTop;
   var parent = parentMatcher(dom, function(parent){
